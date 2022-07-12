@@ -1,0 +1,33 @@
+{
+  "name": "whatsapp2.0",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emoji-mart/data": "^1.0.2",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.7",
+    "better-react-spinkit": "^2.0.4",
+    "email-validator": "^2.0.4",
+    "firebase": "^9.9.0",
+    "moment": "^2.29.4",
+    "next": "12.2.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-firebase-hooks": "^5.0.3",
+    "react-input-emoji": "^4.1.0",
+    "styled-components": "^5.3.5",
+    "timeago-react": "^3.0.5"
+  },
+  "devDependencies": {
+    "eslint": "8.19.0",
+    "eslint-config-next": "12.2.2"
+  }
+}
