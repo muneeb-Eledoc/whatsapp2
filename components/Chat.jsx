@@ -52,7 +52,8 @@ const Chat = ({users, id, user}) => {
             {recipientEmail}
          </Email>
          <LastMessage>
-         <ReadType>&#10003;</ReadType> {lastMessage.message}
+        {lastMessage.user === user.email && <ReadType>&#10003;</ReadType>}
+         {lastMessage.message}
          </LastMessage>
        </InformationContainer>
     </Container>
@@ -63,7 +64,7 @@ export default Chat
 
 const Container = styled.div`
    display: flex;
-   box-shadow: 0px 0px 2px rgba(0,0,0,0.1);
+   box-shadow: 0px 0px 2px rgba(0,0,0,0.06);
    align-items: center;
    cursor: pointer;
    padding: 7px 10px;

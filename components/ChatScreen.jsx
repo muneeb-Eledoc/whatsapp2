@@ -11,21 +11,46 @@ import Message from './Message';
 import getRecipientEmail from '../utils/getRecipientEmail'
 import TimeAgo from 'timeago-react'; 
 import InputEmoji from "react-input-emoji";
+import io from 'socket.io-client';
+
+const socket = io('ws://localhost:1337');
 
 const ChatScreen = ({chatId, chat}) => {
-  const EndMessageRef = useRef()
+  const audioTone = useRef(new Audio('/messagetone.mp3')) 
+  const endMessageRef = useRef()
+  const [status, setStatus] = useState(false)
   const [messages, setMessages] = useState([])
   const [user] = useAuthState(auth)
   const [recipientUser, setRecipientUser] = useState({})
   const [input, setInput] = useState('')
   const recipientEmail = getRecipientEmail(chat.users, user)
-
   const scrollToView = ()=>{
-    EndMessageRef.current.scrollIntoView({
+    endMessageRef.current?.scrollIntoView({
       behavier: 'smooth',
       block: 'start'
     })
   }
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      socket.emit("newUser", user.uid);
+
+    });
+    
+    socket.on('online', (users)=>{
+      setStatus(users.filter(user=> user.userId === recipientUser.id ? true : false))
+    });
+
+    socket.on('return message', (data)=>{
+      audioTone.current.play()
+    });
+
+    socket.on('disconnecting', async ()=>{
+      await updateDoc(doc(db, 'users', user.uid),{
+        lastSeen: serverTimestamp()
+      })
+    })
+  }, [user.uid, recipientUser.id]);
 
   useEffect(()=>{
      const getMessages = async ()=>{
@@ -41,7 +66,7 @@ const ChatScreen = ({chatId, chat}) => {
         setMessages(data)
         setTimeout(() => {
           scrollToView()
-        }, 100);
+        }, 200);
       });
      } 
      getMessages()
@@ -54,7 +79,7 @@ const ChatScreen = ({chatId, chat}) => {
           const q = query(collection(db, 'users'), where('email', '==', recipientEmail))
           onSnapshot(q, (snapshot)=>{
             snapshot.forEach((doc) => {
-                setRecipientUser(doc.data())
+                setRecipientUser({ id: doc.id, ...doc.data() })
             });
           })
      }
@@ -64,9 +89,6 @@ const ChatScreen = ({chatId, chat}) => {
   const sendMessage = async ()=>{
     if(!input) return;
 
-    await updateDoc(doc(db, 'users', user.uid),{
-      lastSeen: serverTimestamp()
-    })
     await addDoc(collection(db, 'messages'), {
        timestamp: serverTimestamp(),
        message: input,
@@ -74,7 +96,7 @@ const ChatScreen = ({chatId, chat}) => {
        chatId: chatId,
        isRead: false
     })
-    scrollToView()
+    socket.emit('new message', recipientUser.id)
     setInput('')
   }
   return (
@@ -86,16 +108,16 @@ const ChatScreen = ({chatId, chat}) => {
         <HeaderInformation>
            <h3>{recipientEmail}</h3>
            {recipientUser && (
-            <p>Last seen  <TimeAgo
+            status ? 'online' : <p>last seen  <TimeAgo
             datetime={recipientUser?.lastSeen ? recipientUser?.lastSeen?.toDate() : 'unavailable'}
             locale='pk'
           /></p>
            )}
         </HeaderInformation>
         <HeaderIcons>
-          <IconButton>
+          {/* <IconButton>
              <AttachFileIcon />
-          </IconButton>
+          </IconButton> */}
           <IconButton>
               <MoreVert />
           </IconButton>
@@ -106,7 +128,7 @@ const ChatScreen = ({chatId, chat}) => {
         {messages.sort((m1, m2)=> m1.timestamp - m2.timestamp).map((message, i) => (
           <Message key={message.id} message={message} user={user.email} />
         ))}
-        <EndMessage ref={EndMessageRef} />
+        <EndMessage ref={endMessageRef} />
       </MessagesContainer>
 
       <InputContainer>
@@ -140,9 +162,15 @@ const Header = styled.div`
 const HeaderInformation = styled.div`
   margin-left: 15px;
   flex: 1;
+  @media (max-width: 768px) {
+    margin-left: 8px;
+  }
   > h3{
     margin: 0;
     margin-bottom: 3px;
+    @media (max-width: 768px) {
+    font-size: 15px;
+  }
   }
   > P{
     font-size: 14px;
@@ -152,10 +180,14 @@ const HeaderInformation = styled.div`
 const HeaderIcons = styled.div``;
 
 const MessagesContainer = styled.div`
-  padding: 30px;
+  padding: 6px;
   height: calc(100vh - 130px);
   background-color: #e5ded8;
   overflow-y: auto;
+  @media (max-width: 568px) {
+    padding: 2px;
+  }
+
 `;
 
 const EndMessage = styled.div``;

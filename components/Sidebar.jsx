@@ -1,5 +1,5 @@
 import Avatar from '@mui/material/Avatar';
-import {useState, useEffect} from 'react'
+import {useState, useEffect } from 'react'
 import styled from 'styled-components'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MessageIcon from '@mui/icons-material/Message';
@@ -11,6 +11,7 @@ import { signOut } from 'firebase/auth';
 import { addDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Chat from '../components/Chat'
+
 const Sidebar = ({mobile}) => {
   const [user] = useAuthState(auth)
   const [chats, setChats] = useState([])
@@ -95,7 +96,7 @@ const MainContainer = styled.div`
    flex-direction: column;
    border-right: 1px solid whitesmoke;
    height: 100vh;
-   flex: 0.35;
+   flex: 0.40;
    min-width: 300px;
    max-width: 380px;
    overflow: hidden;
@@ -119,6 +120,7 @@ const MobileSidebar = styled(MainContainer)`
 const NormalSidebar = styled(MainContainer)`
   @media (max-width: 768px) {
     max-width: 100%;
+    flex: 1;
   }
 `;
 

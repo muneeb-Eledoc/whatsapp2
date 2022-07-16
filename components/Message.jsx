@@ -24,7 +24,7 @@ const Message = ({message, user}) => {
         <MessageType>{message.message}
         <TimeStamp>
            {message?.timestamp ? moment(message?.timestamp.toDate()).format('LT') : '...'}
-            <ReadType>&#10003;</ReadType>
+            {message.user === user && <ReadType>&#10003;</ReadType>}
         </TimeStamp>
         </MessageType>
     </Container>
@@ -40,7 +40,6 @@ const Container = styled.div`
 const MessageElement = styled.p`
    width: fit-content;
    padding: 10px;
-   border-radius: 7px;
    margin: 12px;
    position: relative;
    text-align: right;
@@ -53,11 +52,15 @@ const MessageElement = styled.p`
 const Sender = styled(MessageElement)`
    margin-left: auto;
    background-color: #dcfBc6;
-`;
+   border-top-left-radius: 14px;
+   border-bottom-right-radius: 14px;
+   `;
 
 const Reciever = styled(MessageElement)`
    background-color: whitesmoke;
    text-align: left;
+   border-top-right-radius: 14px;
+   border-bottom-left-radius: 14px;
 `;
 
 const TimeStamp = styled.span`
