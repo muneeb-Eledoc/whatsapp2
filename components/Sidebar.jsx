@@ -1,5 +1,5 @@
 import Avatar from '@mui/material/Avatar';
-import {useState, useEffect } from 'react'
+import {useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MessageIcon from '@mui/icons-material/Message';
@@ -11,10 +11,20 @@ import { signOut } from 'firebase/auth';
 import { addDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Chat from '../components/Chat'
+import { socket } from '../utils/socket';
 
 const Sidebar = ({mobile}) => {
   const [user] = useAuthState(auth)
   const [chats, setChats] = useState([])
+  const audioTone = useRef(new Audio('/messagetone.mp3')) 
+  const activetone = useRef(new Audio('/activetone.mp3')) 
+
+  useEffect(() => {
+    socket.on('return message', (data)=>{
+      document.hidden ? audioTone.current.play() : activetone.current.play()
+    });
+
+  },[])
 
   useEffect(()=>{
     const getChat = async ()=>{
@@ -94,7 +104,7 @@ export default Sidebar
 const MainContainer = styled.div`
     display: flex;
    flex-direction: column;
-   border-right: 1px solid whitesmoke;
+   border-right: 1px solid #ebebeb;
    height: 100vh;
    flex: 0.40;
    min-width: 300px;
@@ -105,10 +115,6 @@ const MainContainer = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-  /* :nth-child(4){
-      border-top: 1px solid #e5ded8;      
-  } */
-
 `;
 
 const MobileSidebar = styled(MainContainer)`
@@ -155,6 +161,7 @@ const Header = styled.div`
    top: 0;
    background-color: white;
    z-index: 100;
+   background-color: whitesmoke;
 `;
 
 const UserAvatar = styled(Avatar)`

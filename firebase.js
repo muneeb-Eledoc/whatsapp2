@@ -4,20 +4,20 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDpBcLAsK5V28MY_tovr0lL17JeSdNHRYA",
-    authDomain: "sqa-vetline.firebaseapp.com",
-    projectId: "sqa-vetline",
-    storageBucket: "sqa-vetline.appspot.com",
-    messagingSenderId: "1086296581211",
-    appId: "1:1086296581211:web:433cb9b3a8f149ca7f4b7e",
-    measurementId: "G-JQVQF7PFT2"
-    // apiKey: "AIzaSyB_KLgBQPVOKTfB3pxQYXXFb7I2npn2k2Y",
-    // authDomain: "whatsapp2-0-eeb7e.firebaseapp.com",
-    // projectId: "whatsapp2-0-eeb7e",
-    // storageBucket: "whatsapp2-0-eeb7e.appspot.com",
-    // messagingSenderId: "505337147425",
-    // appId: "1:505337147425:web:3e09a3556b1d93e80e3360",
-    // measurementId: "G-C99FTX0FVZ"
+    // apiKey: "AIzaSyDpBcLAsK5V28MY_tovr0lL17JeSdNHRYA",
+    // authDomain: "sqa-vetline.firebaseapp.com",
+    // projectId: "sqa-vetline",
+    // storageBucket: "sqa-vetline.appspot.com",
+    // messagingSenderId: "1086296581211",
+    // appId: "1:1086296581211:web:433cb9b3a8f149ca7f4b7e",
+    // measurementId: "G-JQVQF7PFT2"
+    apiKey: "AIzaSyB_KLgBQPVOKTfB3pxQYXXFb7I2npn2k2Y",
+    authDomain: "whatsapp2-0-eeb7e.firebaseapp.com",
+    projectId: "whatsapp2-0-eeb7e",
+    storageBucket: "whatsapp2-0-eeb7e.appspot.com",
+    messagingSenderId: "505337147425",
+    appId: "1:505337147425:web:3e09a3556b1d93e80e3360",
+    measurementId: "G-C99FTX0FVZ"
 };
 
 const app = initializeApp(firebaseConfig)

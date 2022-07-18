@@ -11,13 +11,9 @@ import Message from './Message';
 import getRecipientEmail from '../utils/getRecipientEmail'
 import TimeAgo from 'timeago-react'; 
 import InputEmoji from "react-input-emoji";
-import io from 'socket.io-client';
-
-const socket = io('https://whatsapp2--0.herokuapp.com/');
+import { socket } from '../utils/socket';
 
 const ChatScreen = ({chatId, chat}) => {
-  const audioTone = useRef(new Audio('/messagetone.mp3')) 
-  const activetone = useRef(new Audio('/activetone.mp3')) 
   const endMessageRef = useRef()
   const [onlineUsers, setOnlineUsers] = useState([])
   const [messages, setMessages] = useState([])
@@ -51,11 +47,6 @@ const ChatScreen = ({chatId, chat}) => {
 
     socket.on('online', (users)=>{
       setOnlineUsers(users)
-    });
-
-    socket.on('return message', (data)=>{
-      console.log(document.hidden)
-      document.hidden ? audioTone.current.play() : activetone.current.play()
     });
 
   }, [user, recipientUser.id]);
@@ -159,7 +150,7 @@ export default ChatScreen
 const Container = styled.div`
   background: url('/background.jpg');
   background-repeat: no-repeat;
-  background-size: fill;
+  background-size: cover;
 `;
 
 const Header = styled.div`
@@ -172,6 +163,7 @@ const Header = styled.div`
     padding: 11px;
     align-items: center;
     border-bottom: 1px solid whitesmoke;
+    background-color: whitesmoke;
 `;
 
 const HeaderInformation = styled.div`
@@ -198,8 +190,6 @@ const MessagesContainer = styled.div`
   padding: 6px;
   height: calc(100vh - 130px);
   overflow-y: auto;
-  background-color: rgba(0,0,0,0.2);
-  backdrop-filter: blur(3px);
   @media (max-width: 568px) {
     padding: 2px;
   }
@@ -217,6 +207,7 @@ const InputContainer = styled.form`
    align-items: center;
    background-color: white;
    height: 65px;
+   background-color: whitesmoke;
 `;
 
 const StyledInputEmoji = styled(InputEmoji)`

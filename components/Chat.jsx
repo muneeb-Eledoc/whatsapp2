@@ -1,10 +1,11 @@
 import { Avatar } from '@mui/material';
-import { collection, query, where, onSnapshot, limit, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, limit, orderBy, Timestamp } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
 import {useRouter} from 'next/router'
+import moment from 'moment';
 
 const Chat = ({users, id, user}) => {
   const router = useRouter()
@@ -53,7 +54,11 @@ const Chat = ({users, id, user}) => {
          </Email>
          <LastMessage>
         {lastMessage.user === user.email && <ReadType>&#10003;</ReadType>}
-         {lastMessage.message}
+         {lastMessage.message?.substring(0, 25)}
+         {lastMessage.message?.length > 25 && ' ...'}
+         <TimeStamps>
+            {lastMessage?.timestamp ? moment(lastMessage?.timestamp.toDate()).format('LT') : '...'}
+         </TimeStamps>
          </LastMessage>
        </InformationContainer>
        {Object.keys(lastMessage).length !== 0 && lastMessage.user !== user.email && !lastMessage.isRead && <UnRead />}
@@ -98,7 +103,6 @@ const LastMessage = styled.span`
    font-size: 14px;
    display: flex;
    align-items: center;
-
 `;
 
 const Email = styled.p`
@@ -121,10 +125,16 @@ const NotRead = styled(CheckMarkElement)`
 
 const UnRead = styled.div`
    position: absolute;
-   top: 40%;
+   top: 24%;
    right: 5px;
    width: 17px;
    height: 17px;
    border-radius: 50%;
    background-color: #039665;
+`;
+
+const TimeStamps = styled.div`
+   position: absolute;
+   right: 10px;
+   font-size: 12px;
 `;
