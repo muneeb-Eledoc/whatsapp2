@@ -56,6 +56,7 @@ const Chat = ({users, id, user}) => {
          {lastMessage.message}
          </LastMessage>
        </InformationContainer>
+       {Object.keys(lastMessage).length !== 0 && lastMessage.user !== user.email && !lastMessage.isRead && <UnRead />}
     </Container>
   )
 }
@@ -63,6 +64,7 @@ const Chat = ({users, id, user}) => {
 export default Chat
 
 const Container = styled.div`
+   position: relative;
    display: flex;
    box-shadow: 0px 0px 2px rgba(0,0,0,0.06);
    align-items: center;
@@ -115,4 +117,14 @@ const IsRead = styled(CheckMarkElement)`
 
 const NotRead = styled(CheckMarkElement)`
       color: lightgray;
+`;
+
+const UnRead = styled.div`
+   position: absolute;
+   top: 40%;
+   right: 5px;
+   width: 17px;
+   height: 17px;
+   border-radius: 50%;
+   background-color: #039665;
 `;

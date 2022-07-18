@@ -13,44 +13,52 @@ import TimeAgo from 'timeago-react';
 import InputEmoji from "react-input-emoji";
 import io from 'socket.io-client';
 
-const socket = io('ws://localhost:1337');
+const socket = io('https://whatsapp2--0.herokuapp.com/');
 
 const ChatScreen = ({chatId, chat}) => {
   const audioTone = useRef(new Audio('/messagetone.mp3')) 
+  const activetone = useRef(new Audio('/activetone.mp3')) 
   const endMessageRef = useRef()
-  const [status, setStatus] = useState(false)
+  const [onlineUsers, setOnlineUsers] = useState([])
   const [messages, setMessages] = useState([])
   const [user] = useAuthState(auth)
   const [recipientUser, setRecipientUser] = useState({})
   const [input, setInput] = useState('')
   const recipientEmail = getRecipientEmail(chat.users, user)
+
   const scrollToView = ()=>{
     endMessageRef.current?.scrollIntoView({
       behavier: 'smooth',
       block: 'start'
     })
   }
+  
+  const options = {
+    body: 'Hi there',
+    icon: "/whatsapp.jpg",
+    vibrate: [200, 100, 200],
+    tag: "new-product",
+    image: '/whatsapp.jpg',
+    badge: "https://spyna.it/icons/android-icon-192x192.png",
+    actions: [{ action: "Detail", title: "View", icon: "https://via.placeholder.com/128/ff0000" }]
+  };
+  navigator.serviceWorker.ready.then(function(serviceWorker) {
+    serviceWorker.showNotification('my  notification', options);
+  });
 
   useEffect(() => {
-    socket.on('connect', () => {
-      socket.emit("newUser", user.uid);
+    socket.emit("newUser", user.uid);
 
-    });
-    
     socket.on('online', (users)=>{
-      setStatus(users.filter(user=> user.userId === recipientUser.id ? true : false))
+      setOnlineUsers(users)
     });
 
     socket.on('return message', (data)=>{
-      audioTone.current.play()
+      console.log(document.hidden)
+      document.hidden ? audioTone.current.play() : activetone.current.play()
     });
 
-    socket.on('disconnecting', async ()=>{
-      await updateDoc(doc(db, 'users', user.uid),{
-        lastSeen: serverTimestamp()
-      })
-    })
-  }, [user.uid, recipientUser.id]);
+  }, [user, recipientUser.id]);
 
   useEffect(()=>{
      const getMessages = async ()=>{
@@ -71,7 +79,6 @@ const ChatScreen = ({chatId, chat}) => {
      } 
      getMessages()
   },[chatId])
-
   
   useEffect(() => {
     setRecipientUser({})
@@ -99,6 +106,12 @@ const ChatScreen = ({chatId, chat}) => {
     socket.emit('new message', recipientUser.id)
     setInput('')
   }
+
+  const checkUserOnline = ()=>{
+    const online = onlineUsers.find((user) => user.userId === recipientUser.id);
+    return online ? true : false; 
+  }
+
   return (
     <Container>
       <Header>
@@ -108,7 +121,7 @@ const ChatScreen = ({chatId, chat}) => {
         <HeaderInformation>
            <h3>{recipientEmail}</h3>
            {recipientUser && (
-            status ? 'online' : <p>last seen  <TimeAgo
+            checkUserOnline() ? 'online' : <p>last seen  <TimeAgo
             datetime={recipientUser?.lastSeen ? recipientUser?.lastSeen?.toDate() : 'unavailable'}
             locale='pk'
           /></p>
@@ -144,7 +157,9 @@ const ChatScreen = ({chatId, chat}) => {
 export default ChatScreen
 
 const Container = styled.div`
-   
+  background: url('/background.jpg');
+  background-repeat: no-repeat;
+  background-size: fill;
 `;
 
 const Header = styled.div`
@@ -182,8 +197,9 @@ const HeaderIcons = styled.div``;
 const MessagesContainer = styled.div`
   padding: 6px;
   height: calc(100vh - 130px);
-  background-color: #e5ded8;
   overflow-y: auto;
+  background-color: rgba(0,0,0,0.2);
+  backdrop-filter: blur(3px);
   @media (max-width: 568px) {
     padding: 2px;
   }

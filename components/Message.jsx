@@ -10,7 +10,7 @@ const Message = ({message, user}) => {
 
   useEffect(() => {
     async function updateMessage(){
-        if (message.user === user) return;
+        if (message.user === user && !document.hidden) return;
 
         await updateDoc(doc(db, 'messages', message.id), {
            isRead: true
@@ -46,7 +46,7 @@ const MessageElement = styled.p`
    margin-left: 10px;
    min-width: 75px;
    padding-bottom: 18px;
-   box-shadow: 0 0 8px rgba(0,0,0,0.12);
+   box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
 `;
 
 const Sender = styled(MessageElement)`
