@@ -17,13 +17,12 @@ const Sidebar = ({mobile}) => {
   const [user] = useAuthState(auth)
   const [chats, setChats] = useState([])
   const audioTone = useRef(new Audio('/messagetone.mp3')) 
-  const activetone = useRef(new Audio('/activetone.mp3')) 
+  const activetone = useRef(new Audio('/activetone.mp3'))
 
   useEffect(() => {
     socket.on('return message', (data)=>{
       document.hidden ? audioTone.current.play() : activetone.current.play()
     });
-
   },[])
 
   useEffect(()=>{

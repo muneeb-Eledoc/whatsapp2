@@ -98,7 +98,7 @@
     core-js-pure "^3.20.2"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.2", "@babel/runtime@^7.13.10", "@babel/runtime@^7.17.2", "@babel/runtime@^7.18.3", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.10.2", "@babel/runtime@^7.13.10", "@babel/runtime@^7.17.2", "@babel/runtime@^7.18.3", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.7":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.18.6.tgz#6a1ef59f838debd670421f8c7f2cbb8da9751580"
   integrity sha512-t9wi7/AW6XtKahAe20Yw0/mMljKq0B1r2fPdvaAdV/KPDZewFXdaaa6K7lxmZBZ8FBNpCiAT6iHPmd6QO9bKfQ==
@@ -137,11 +137,6 @@
   dependencies:
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
-
-"@emoji-mart/data@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@emoji-mart/data/-/data-1.0.2.tgz#2b94c5b5f2c79611c12238438dad9516576a09ab"
-  integrity sha512-+ZdzBM4llDJJvjuCEsdOYVoSlNA16MMmxKG3oF5LARkwhx6N5clr6phzneWV1qIwJsywqwG7NaBjH8DV6yzjcA==
 
 "@emotion/babel-plugin@^11.7.1":
   version "11.9.2"
@@ -1455,14 +1450,6 @@ email-validator@^2.0.4:
   resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-2.0.4.tgz#b8dfaa5d0dae28f1b03c95881d904d4e40bfe7ed"
   integrity sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==
 
-emoji-mart@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-3.0.1.tgz#9ce86706e02aea0506345f98464814a662ca54c6"
-  integrity sha512-sxpmMKxqLvcscu6mFn9ITHeZNkGzIvD0BSNFE/LJESPbCA8s1jM6bCDPjWbV31xHq7JXaxgpHxLB54RCbBZSlg==
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    prop-types "^15.6.0"
-
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
@@ -2634,7 +2621,7 @@ promise-polyfill@8.1.3:
   resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-8.1.3.tgz#8c99b3cf53f3a91c68226ffde7bde81d7f904116"
   integrity sha512-MG5r82wBzh7pSKDRa9y+vllNHz3e3d4CNj1PQE4BQYxLme0gKYYBm9YENq+UkEikyZ0XbiGWxYlVw3Rl9O/U8g==
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -2684,13 +2671,6 @@ react-firebase-hooks@^5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/react-firebase-hooks/-/react-firebase-hooks-5.0.3.tgz#3125a382d6b72deee776fe1df9e0c8173cf36d5d"
   integrity sha512-0+V2XwInZJNjW8B2cm+U21Hlv4xnp/1tJqIoDg2rjyWzKTQ9VoLPQ9PAt+fMqPumjLz5uCIREY7YqGSSjc439Q==
-
-react-input-emoji@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-input-emoji/-/react-input-emoji-4.1.0.tgz#3cdc939a814d6691de2063e7565f7b7f2db7d23e"
-  integrity sha512-iGOEVTUIhu9d9+hswTElqS1t4onjaa88R7on2a2mDHgFdJKIe62EPiAUEAVA9xqLfeSvb4cPjlbGJ4+ydT12rg==
-  dependencies:
-    emoji-mart "3.0.1"
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

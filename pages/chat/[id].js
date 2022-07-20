@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar'
 import { auth, db } from '../../firebase';
 import getRecipientEmail from '../../utils/getRecipientEmail';
 
-const Chat = ({chat})=>{
+const Chat = ({chat, onlineUsers})=>{
     const [user] = useAuthState(auth)
     const recipientEmail = getRecipientEmail(chat.users, user)
     
@@ -19,7 +19,7 @@ const Chat = ({chat})=>{
             </Head>
             <Sidebar mobile={true}  />
             <ChatContainer>
-                <ChatScreen chatId={chat.id} chat={chat} />
+                <ChatScreen chatId={chat.id} chat={chat} onlineUsers={onlineUsers}/>
             </ChatContainer>
         </Container>
     )

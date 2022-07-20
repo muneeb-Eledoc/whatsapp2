@@ -47,20 +47,17 @@ const MessageElement = styled.p`
    min-width: 75px;
    padding-bottom: 18px;
    box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+   border-radius: 10px;
 `;
 
 const Sender = styled(MessageElement)`
    margin-left: auto;
-   background-color: #dcfBc6;
-   border-top-left-radius: 14px;
-   border-bottom-right-radius: 14px;
+   background-color: #cbe9b5;
    `;
 
 const Reciever = styled(MessageElement)`
-   background-color: whitesmoke;
+   background-color: #ebebeb;
    text-align: left;
-   border-top-right-radius: 14px;
-   border-bottom-left-radius: 14px;
 `;
 
 const TimeStamp = styled.span`

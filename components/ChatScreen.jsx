@@ -9,18 +9,21 @@ import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Message from './Message';
 import getRecipientEmail from '../utils/getRecipientEmail'
-import TimeAgo from 'timeago-react'; 
-import InputEmoji from "react-input-emoji";
+import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import { socket } from '../utils/socket';
+import Emoji from './Emoji';
+import SendIcon from '@mui/icons-material/Send';
+import moment from 'moment';
 
-const ChatScreen = ({chatId, chat}) => {
+const ChatScreen = ({chatId, chat, onlineUsers}) => {
   const endMessageRef = useRef()
-  const [onlineUsers, setOnlineUsers] = useState([])
   const [messages, setMessages] = useState([])
   const [user] = useAuthState(auth)
   const [recipientUser, setRecipientUser] = useState({})
   const [input, setInput] = useState('')
   const recipientEmail = getRecipientEmail(chat.users, user)
+  const [showEmoji, setShowEmoji] = useState(false)
+  const [typing, setTyping] = useState(false)
 
   const scrollToView = ()=>{
     endMessageRef.current?.scrollIntoView({
@@ -28,26 +31,11 @@ const ChatScreen = ({chatId, chat}) => {
       block: 'start'
     })
   }
-  
-  const options = {
-    body: 'Hi there',
-    icon: "/whatsapp.jpg",
-    vibrate: [200, 100, 200],
-    tag: "new-product",
-    image: '/whatsapp.jpg',
-    badge: "https://spyna.it/icons/android-icon-192x192.png",
-    actions: [{ action: "Detail", title: "View", icon: "https://via.placeholder.com/128/ff0000" }]
-  };
-  navigator.serviceWorker.ready.then(function(serviceWorker) {
-    serviceWorker.showNotification('my  notification', options);
-  });
 
   useEffect(() => {
-    socket.emit("newUser", user.uid);
-
-    socket.on('online', (users)=>{
-      setOnlineUsers(users)
-    });
+    socket.on('istyping', ({typing})=>{
+      setTyping(typing)
+    })
 
   }, [user, recipientUser.id]);
 
@@ -84,7 +72,8 @@ const ChatScreen = ({chatId, chat}) => {
      get_Recipient_User()
 }, [recipientEmail])
 
-  const sendMessage = async ()=>{
+  const sendMessage = async (e)=>{
+    e.preventDefault()
     if(!input) return;
 
     await addDoc(collection(db, 'messages'), {
@@ -103,6 +92,22 @@ const ChatScreen = ({chatId, chat}) => {
     return online ? true : false; 
   }
 
+  const emojiChange = (emojiObject) => {
+    setInput(prev=> prev + emojiObject.emoji);
+  };
+
+  const handleChange = (e)=>{
+    setInput(e.target.value)
+  }
+
+  const handleTyping = ()=>{
+    socket.emit('typing', {currentUserId: user.uid, recipientUserId: recipientUser.id})
+
+    setTimeout(() => {
+      socket.emit('stop typing', {currentUserId: user.uid, recipientUserId: recipientUser.id})      
+    }, 3000);
+  }
+
   return (
     <Container>
       <Header>
@@ -111,17 +116,13 @@ const ChatScreen = ({chatId, chat}) => {
          }
         <HeaderInformation>
            <h3>{recipientEmail}</h3>
-           {recipientUser && (
-            checkUserOnline() ? 'online' : <p>last seen  <TimeAgo
-            datetime={recipientUser?.lastSeen ? recipientUser?.lastSeen?.toDate() : 'unavailable'}
-            locale='pk'
-          /></p>
-           )}
+           {!typing ? recipientUser && (
+            checkUserOnline() ? <Online>online</Online> : <Online>
+              last seen  {recipientUser?.lastSeen ? moment(recipientUser?.lastSeen.toDate()).format('LT') : '...'}
+            </Online>
+           ) : (<Typing>typing...</Typing>)}
         </HeaderInformation>
         <HeaderIcons>
-          {/* <IconButton>
-             <AttachFileIcon />
-          </IconButton> */}
           <IconButton>
               <MoreVert />
           </IconButton>
@@ -134,9 +135,19 @@ const ChatScreen = ({chatId, chat}) => {
         ))}
         <EndMessage ref={endMessageRef} />
       </MessagesContainer>
+       
+     {showEmoji && <EmojiContainer>
+      <Emoji emojiChange={emojiChange}/>
+      </EmojiContainer>}
 
-      <InputContainer>
-        <StyledInputEmoji value={input} onChange={setInput} borderRadius={8} background='whitesmoke' onEnter={sendMessage}/>
+      <InputContainer onSubmit={sendMessage}>
+        <IconButton onClick={()=> setShowEmoji(!showEmoji)}>
+          <EmojiEmotionsIcon />
+        </IconButton>
+        <StyleInput placeholder='Type Message' value={input} onChange={handleChange} onKeyDown={handleTyping} />
+        <IconButton type='submit'>
+          <SendIcon  />
+        </IconButton>
         <IconButton>
           <MicIcon />
         </IconButton>
@@ -148,9 +159,8 @@ const ChatScreen = ({chatId, chat}) => {
 export default ChatScreen
 
 const Container = styled.div`
-  background: url('/background.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
+  position: relative;
+  background: linear-gradient(to right,#75BBCB, #2D7A95);
 `;
 
 const Header = styled.div`
@@ -164,6 +174,7 @@ const Header = styled.div`
     align-items: center;
     border-bottom: 1px solid whitesmoke;
     background-color: whitesmoke;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 const HeaderInformation = styled.div`
@@ -187,6 +198,7 @@ const HeaderInformation = styled.div`
 const HeaderIcons = styled.div``;
 
 const MessagesContainer = styled.div`
+  backdrop-filter: blur(5px);
   padding: 6px;
   height: calc(100vh - 130px);
   overflow-y: auto;
@@ -210,13 +222,29 @@ const InputContainer = styled.form`
    background-color: whitesmoke;
 `;
 
-const StyledInputEmoji = styled(InputEmoji)`
-    /* flex: 1;
+const StyleInput = styled.input`
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 10px;
+    font-size: 15px;
     outline: none;
-    margin-left: 4px;
-    padding: 10px 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border:none; */
-    /* background-color: whitesmoke; */
+`;
+
+const EmojiContainer = styled.div`
+    position: absolute;
+    bottom: 67px;
+    left: 2px;
+`;
+
+const Typing = styled.div`
+    font-size: 15px;
+    font-weight: 600;
+    color: #089654;
+`;
+
+const Online = styled.div`
+    font-size: 15px;
+    color: gray;
+    font-weight: 600;
 `;
