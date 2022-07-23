@@ -6,6 +6,7 @@ import { db } from '../firebase';
 import getRecipientEmail from '../utils/getRecipientEmail';
 import {useRouter} from 'next/router'
 import moment from 'moment';
+import GifIcon from '@mui/icons-material/Gif';
 
 const Chat = ({users, id, user}) => {
   const router = useRouter()
@@ -54,8 +55,10 @@ const Chat = ({users, id, user}) => {
          </Email>
          <LastMessage>
         {lastMessage.user === user.email && <ReadType>&#10003;</ReadType>}
+         {lastMessage.type === 'text' ? (<>
          {lastMessage.message?.substring(0, 25)}
          {lastMessage.message?.length > 25 && ' ...'}
+         </>) : <GifIcon />}
          <TimeStamps>
             {lastMessage?.timestamp ? moment(lastMessage?.timestamp.toDate()).format('LT') : '...'}
          </TimeStamps>

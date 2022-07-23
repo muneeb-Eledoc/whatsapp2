@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import moment from 'moment'; 
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
+import Image from 'next/image'
 
 const Message = ({message, user}) => {
   const MessageType = message.user === user ? Sender : Reciever;
@@ -21,12 +22,18 @@ const Message = ({message, user}) => {
   
   return (
     <Container>
-        <MessageType>{message.message}
+        {message.type === 'text' ? <MessageType>{message.message}
         <TimeStamp>
            {message?.timestamp ? moment(message?.timestamp.toDate()).format('LT') : '...'}
             {message.user === user && <ReadType>&#10003;</ReadType>}
         </TimeStamp>
-        </MessageType>
+        </MessageType> : <MessageType>
+         <Image src={'/gifs/'+message.message} width={200} height={240} alt='gif' />
+        <TimeStamp>
+           {message?.timestamp ? moment(message?.timestamp.toDate()).format('LT') : '...'}
+            {message.user === user && <ReadType>&#10003;</ReadType>}
+        </TimeStamp>
+        </MessageType>}
     </Container>
   )
 }

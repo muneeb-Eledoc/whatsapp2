@@ -14,6 +14,8 @@ import { socket } from '../utils/socket';
 import Emoji from './Emoji';
 import SendIcon from '@mui/icons-material/Send';
 import moment from 'moment';
+import Gifs from './Gifs';
+import GifBoxIcon from '@mui/icons-material/GifBox';
 
 const ChatScreen = ({chatId, chat, onlineUsers}) => {
   const endMessageRef = useRef()
@@ -24,6 +26,8 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
   const recipientEmail = getRecipientEmail(chat.users, user)
   const [showEmoji, setShowEmoji] = useState(false)
   const [typing, setTyping] = useState(false)
+  const [showGif, setShowGif] = useState(false)
+  const [gif, setGif] = useState('')
 
   const scrollToView = ()=>{
     endMessageRef.current?.scrollIntoView({
@@ -74,17 +78,25 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
 
   const sendMessage = async (e)=>{
     e.preventDefault()
-    if(!input) return;
+
+    if(input===''){
+      if(gif===''){
+        return
+      }
+    }
 
     await addDoc(collection(db, 'messages'), {
        timestamp: serverTimestamp(),
-       message: input,
+       message: gif===''?input:gif,
+       type: gif===''? 'text' : 'gif',
        user: user.email,
        chatId: chatId,
        isRead: false
     })
     socket.emit('new message', recipientUser.id)
     setInput('')
+    setGif('')
+    setShowGif(false)
   }
 
   const checkUserOnline = ()=>{
@@ -140,17 +152,22 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
       <Emoji emojiChange={emojiChange}/>
       </EmojiContainer>}
 
+      {showGif && <Gifs setGif={setGif} gif={gif} sendMessage={sendMessage}/>}
+      
       <InputContainer onSubmit={sendMessage}>
+        <IconButton onClick={()=> {setShowGif(!showGif); setGif('')}} >
+          <GifBoxIcon />
+        </IconButton>
         <IconButton onClick={()=> setShowEmoji(!showEmoji)}>
           <EmojiEmotionsIcon />
         </IconButton>
-        <StyleInput placeholder='Type Message' value={input} onChange={handleChange} onKeyDown={handleTyping} />
+     {gif ==='' && <><StyleInput placeholder='Type Message' value={input} onChange={handleChange} onKeyDown={handleTyping} /> 
         <IconButton type='submit'>
           <SendIcon  />
         </IconButton>
         <IconButton>
           <MicIcon />
-        </IconButton>
+        </IconButton></>}
       </InputContainer>
     </Container>
   )
