@@ -9,7 +9,7 @@ const Gifs = ({setGif, gif, sendMessage}) => {
     const [gifs, setGifs] = useState([])
     useEffect(() => {
         async function getGifs(){
-          const res = await fetch('http://whatsapp-ivory.vercel.app/api/gifs')
+          const res = await fetch('https://whatsapp-ivory.vercel.app/api/gifs')
           const json = await res.json();
           setGifs(json.gifs)
         }
