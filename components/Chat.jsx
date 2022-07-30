@@ -1,5 +1,5 @@
 import { Avatar } from '@mui/material';
-import { collection, query, where, onSnapshot, limit, orderBy, Timestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, limit, orderBy } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import { db } from '../firebase';
@@ -30,9 +30,14 @@ const Chat = ({users, id, user}) => {
      const getLastMessage = async(_id)=>{
       const q = query(collection(db, 'messages'), where("chatId", "==", _id), orderBy('timestamp', 'desc'), limit(1));
         onSnapshot(q, (querySnapshot) => {
-         querySnapshot.forEach((doc) => {
-             setLastMessage(doc.data())
-         })
+         if(querySnapshot.empty){
+            console.log('empty')
+            setLastMessage({})
+         }else{
+            querySnapshot.forEach((doc) => {
+                setLastMessage(doc.data())
+            })
+         }
         })
      }
      getLastMessage(id)
@@ -55,10 +60,10 @@ const Chat = ({users, id, user}) => {
          </Email>
          <LastMessage>
         {lastMessage.user === user.email && <ReadType>&#10003;</ReadType>}
-         {lastMessage.type === 'text' ? (<>
+         {Object.keys(lastMessage).length !== 0 && lastMessage.type === 'text' ? (<>
          {lastMessage.message?.substring(0, 25)}
          {lastMessage.message?.length > 25 && ' ...'}
-         </>) : <GifIcon />}
+         </>) : Object.keys(lastMessage).length !== 0 && <GifIcon />}
          <TimeStamps>
             {lastMessage?.timestamp ? moment(lastMessage?.timestamp.toDate()).format('LT') : '...'}
          </TimeStamps>
@@ -74,17 +79,16 @@ export default Chat
 const Container = styled.div`
    position: relative;
    display: flex;
-   box-shadow: 0px 0px 2px rgba(0,0,0,0.06);
    align-items: center;
    cursor: pointer;
    padding: 7px 10px;
    word-break: break-word;
-   border-bottom: 1px solid whitesmoke;
+   border-bottom: 1px solid rgba(0,0,0,0.6);
    :hover{
-    background-color: #f1f1f1;
+    background-color: rgba(0,0,0,0.5);
    }
    :active{
-      background-color: lightgray;
+      background-color: black;
    }
 `;
 
@@ -102,7 +106,7 @@ const InformationContainer = styled.div`
 `;
 
 const LastMessage = styled.span`
-   color: gray;
+   color: whitesmoke;
    font-size: 14px;
    display: flex;
    align-items: center;
@@ -110,6 +114,7 @@ const LastMessage = styled.span`
 
 const Email = styled.p`
      font-weight: 600;
+     color: whitesmoke;
 `;
 
 const CheckMarkElement = styled.div`

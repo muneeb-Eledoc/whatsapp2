@@ -25,7 +25,7 @@ const Container = styled.div`
 const PlaceholderSvg = styled.div`
     flex: 1;
     height: 100vh;
-    background-color: whitesmoke;
+    background-color: rgba(0,0,0,0.9);
     display: grid;
     place-items: center;
     @media (max-width: 768px) {

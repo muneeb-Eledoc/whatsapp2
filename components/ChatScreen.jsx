@@ -2,7 +2,7 @@ import MoreVert from '@mui/icons-material/MoreVert';
 import { Avatar, IconButton } from '@mui/material';
 import React, { useEffect, useState,useRef } from 'react'
 import styled from 'styled-components';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import Router from "next/router";
 import MicIcon from '@mui/icons-material/Mic';
 import { addDoc, collection, doc, getDocs, onSnapshot, orderBy, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -44,6 +44,10 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
   }, [user, recipientUser.id]);
 
   useEffect(()=>{
+     if(!chat.users.includes(user.email)){
+        Router.push('/')
+     }
+
      const getMessages = async ()=>{
        const q = query(collection(db, 'messages'), where("chatId", "==", chatId), orderBy('timestamp', 'asc'));
       onSnapshot(q, (querySnapshot) => {
@@ -61,7 +65,7 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
       });
      } 
      getMessages()
-  },[chatId])
+  },[chatId, chat, user])
   
   useEffect(() => {
     setRecipientUser({})
@@ -135,14 +139,14 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
            ) : (<Typing>typing...</Typing>)}
         </HeaderInformation>
         <HeaderIcons>
-          <IconButton>
+          <IconButton sx={{color:'whitesmoke'}}>
               <MoreVert />
           </IconButton>
         </HeaderIcons>
       </Header>
 
       <MessagesContainer>
-        {messages.sort((m1, m2)=> m1.timestamp - m2.timestamp).map((message, i) => (
+        {messages.map((message, i) => (
           <Message key={message.id} message={message} user={user.email} />
         ))}
         <EndMessage ref={endMessageRef} />
@@ -155,17 +159,17 @@ const ChatScreen = ({chatId, chat, onlineUsers}) => {
       {showGif && <Gifs setGif={setGif} gif={gif} sendMessage={sendMessage}/>}
       
       <InputContainer onSubmit={sendMessage}>
-        <IconButton onClick={()=> {setShowGif(!showGif); setGif('')}} >
+        <IconButton onClick={()=> {setShowGif(!showGif); setGif('')}} sx={{color:'whitesmoke'}} >
           <GifBoxIcon />
         </IconButton>
-        <IconButton onClick={()=> setShowEmoji(!showEmoji)}>
+        <IconButton onClick={()=> setShowEmoji(!showEmoji)} sx={{color:'whitesmoke'}}>
           <EmojiEmotionsIcon />
         </IconButton>
      {gif ==='' && <><StyleInput placeholder='Type Message' value={input} onChange={handleChange} onKeyDown={handleTyping} /> 
-        <IconButton type='submit'>
+        <IconButton type='submit' sx={{color:'whitesmoke'}}>
           <SendIcon  />
         </IconButton>
-        <IconButton>
+        <IconButton sx={{color:'whitesmoke'}}>
           <MicIcon />
         </IconButton></>}
       </InputContainer>
@@ -177,7 +181,8 @@ export default ChatScreen
 
 const Container = styled.div`
   position: relative;
-  background: linear-gradient(to right,#75BBCB, #2D7A95);
+  background: url('https://wallpapercave.com/uwp/uwp2609206.jpeg');
+  background-size: cover;
 `;
 
 const Header = styled.div`
@@ -185,13 +190,13 @@ const Header = styled.div`
     background-color: white;
     z-index: 100;
     top: 0;
-    height: 65px;
+    height: 66px;
     display: flex;
     padding: 11px;
     align-items: center;
-    border-bottom: 1px solid whitesmoke;
-    background-color: whitesmoke;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    backdrop-filter: blur(15px);
+    background-color: rgba(0,0,0,0.45);
 `;
 
 const HeaderInformation = styled.div`
@@ -203,6 +208,7 @@ const HeaderInformation = styled.div`
   > h3{
     margin: 0;
     margin-bottom: 3px;
+    color: whitesmoke;
     @media (max-width: 768px) {
     font-size: 15px;
   }
@@ -215,7 +221,8 @@ const HeaderInformation = styled.div`
 const HeaderIcons = styled.div``;
 
 const MessagesContainer = styled.div`
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
+  background-color: rgba(0,0,0,0.4);
   padding: 6px;
   height: calc(100vh - 130px);
   overflow-y: auto;
@@ -234,9 +241,10 @@ const InputContainer = styled.form`
    bottom: 0;
    z-index: 100;
    align-items: center;
-   background-color: white;
    height: 65px;
-   background-color: whitesmoke;
+   border-top: 3px solid rgba(0,0,0,0.25);
+    backdrop-filter: blur(15px);
+    background-color: rgba(0,0,0,0.45);
 `;
 
 const StyleInput = styled.input`
@@ -246,6 +254,8 @@ const StyleInput = styled.input`
     padding: 12px 10px;
     font-size: 15px;
     outline: none;
+    color: white;
+    background-color: #9b9b9b33;
 `;
 
 const EmojiContainer = styled.div`
@@ -262,6 +272,6 @@ const Typing = styled.div`
 
 const Online = styled.div`
     font-size: 15px;
-    color: gray;
+    color: whitesmoke;
     font-weight: 600;
 `;

@@ -67,10 +67,10 @@ const Sidebar = ({mobile}) => {
               });
             }}/>
             <IconsContainer>
-              <IconButton>
+              <IconButton sx={{color:'whitesmoke'}}>
                 <MessageIcon />
               </IconButton>
-              <IconButton>
+              <IconButton sx={{color:'whitesmoke'}}>
                 <MoreVertIcon />
               </IconButton>
             </IconsContainer>
@@ -83,7 +83,7 @@ const Sidebar = ({mobile}) => {
           </SearchWrapper>
         </Search>
 
-        <StyledButton onClick={createChat}>
+        <StyledButton onClick={createChat} sx={{color:'whitesmoke'}}>
           Start New Chat
         </StyledButton>
 
@@ -103,7 +103,7 @@ export default Sidebar
 const MainContainer = styled.div`
     display: flex;
    flex-direction: column;
-   border-right: 1px solid #ebebeb;
+   border-right: 1px solid #353333;
    height: 100vh;
    flex: 0.40;
    min-width: 300px;
@@ -114,6 +114,7 @@ const MainContainer = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
+  background: url('https://images.unsplash.com/photo-1545598917-9344335719fe?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80');
 `;
 
 const MobileSidebar = styled(MainContainer)`
@@ -134,20 +135,16 @@ const ChatContainer = styled.div`
    flex-direction: column;
    flex-grow: 1;
    overflow-y: auto;
-   /* height: 77.2vh; */
-   > * {
-      &:first-child {
-        border-top: 1px solid #e5ded8;
-      }
-    }
+   backdrop-filter: blur(14px);
+   background-color: rgba(0,0,0,0.5);
     ::-webkit-scrollbar{
      width: 6px;
   }
   ::-webkit-scrollbar-track{
-     background-color: whitesmoke;
+     background-color: #46464639;
   }
   ::-webkit-scrollbar-thumb{
-     background-color: #e5ded8;
+     background-color: #f8d9bf53;
   }
 `;
 
@@ -155,12 +152,12 @@ const Header = styled.div`
    padding: 12px;
    display: flex;
    justify-content: space-between;
-   border-bottom: 1px solid whitesmoke;
+   border-bottom: 3px solid #08080864;
    position: sticky;
    top: 0;
-   background-color: white;
    z-index: 100;
-   background-color: whitesmoke;
+   backdrop-filter: blur(12px);
+   background-color: rgba(0,0,0,0.5);
 `;
 
 const UserAvatar = styled(Avatar)`
@@ -179,22 +176,28 @@ const Search = styled.div`
   width: 100%;
   display: flex;
   height: 48px;
+  align-items: center;
   padding: 5px 15px;
-  border-bottom: 1px solid whitesmoke;
+  border-bottom: 3px solid rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+   background-color: rgba(0,0,0,0.5);
+
 `;
 
 const SearchWrapper = styled.div`
   width: 100%;
   display: flex;
-  background-color: whitesmoke;
+   background-color: #504c614c;
   border-radius: 8px;
   height: 37px;
   padding: 4px 8px;
+  border: 3px solid rgba(0,0,0,0.3);
+
 `;
 
 const StyledSearchIcon = styled(SearchIcon)`
   align-self: center;
-  color: gray;
+  color: #c0bebe;
   margin-right: 10px;
   font-size: 22px;
 `;
@@ -204,12 +207,17 @@ const Input = styled.input`
    outline: none;
    border: none;
    background: none;
+   color: white;
 `;
 
 const StyledButton = styled(IconButton)`
     width: 100%;
     margin: 1px 3px;
+    backdrop-filter: blur(10px);
+    
     &&&{
+      border-bottom: 3px solid rgba(0,0,0,0.4);
+      background-color: rgba(0,0,0,0.5);
       font-size: 18px;
       border-radius: 3px;
     }
